@@ -1,0 +1,17 @@
+# Tools
+tailwind.exe
+
+# Environment / Secret variables
+.env
+.env.local
+.env.*.local
+.dev.vars
+
+# OS junk
+Thumbs.db
+.DS_Store
+
+node_modules/
+.dev.vars
+.env
+.wrangler/

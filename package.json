@@ -1,0 +1,14 @@
+{
+    "name": "aui-chapel",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy"
+    },
+    "dependencies": {
+        "@cloudflare/kv-asset-handler": "^0.3.4",
+        "@supabase/supabase-js": "^2.99.1"
+    }
+}

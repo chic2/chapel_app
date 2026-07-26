@@ -1,0 +1,25 @@
+name = "aui-chapel"
+main = "server/server.js"
+compatibility_date = "2025-01-01"
+workers_dev = false
+
+# Serve static files from APP folder
+[site]
+bucket = "./APP"
+
+[vars]
+ALLOWED_ORIGIN = "*"
+SITE_URL = "https://aui-chapel.aui-chapel-ng.workers.dev"
+# Note: STAFF_INVITE_CODE, SUPABASE keys, and PAYSTACK keys must be set via:
+# wrangler secret put SUPABASE_URL
+# wrangler secret put SUPABASE_ANON_KEY
+# wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+# wrangler secret put PAYSTACK_SECRET_KEY
+# wrangler secret put PAYSTACK_PUBLIC_KEY
+# wrangler secret put STAFF_INVITE_CODE
+
+# D1 Database
+[[d1_databases]]
+binding = "aui_chapel_db"
+database_name = "aui-chapel-db"
+database_id = "ed94257c-aa76-4c7d-bac1-36e99f9fa1bd"

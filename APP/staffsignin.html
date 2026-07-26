@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Sign In | AUI Chapel</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700&family=Crimson+Pro:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        :root {
+            --maroon: #4A0404;
+            --gold: #FFD700;
+            --gold-dark: #B8860B;
+            --error: #ff4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0a0000;
+            color: white;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .serif {
+            font-family: 'Crimson Pro', serif;
+        }
+
+        .mesh-bg {
+            background-image:
+                radial-gradient(at 0% 0%, rgba(74, 4, 4, 0.5) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 215, 0, 0.05) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .glass {
+            background: rgba(74, 4, 4, 0.45);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* NAVIGATION */
+        /* ─────────────────────────────────────────────── */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(74, 4, 4, 0.45);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            width: 100%;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+            text-decoration: none;
+        }
+
+        .logo-wrap img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo-main {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+            color: white;
+        }
+
+        .logo-small {
+            font-size: 9px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 40px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-login {
+            background: var(--gold);
+            color: var(--maroon);
+            padding: 8px 20px;
+            border-radius: 999px;
+            transition: transform 0.2s;
+        }
+
+        .nav-login:hover {
+            transform: scale(1.05);
+        }
+
+        #menu-btn {
+            display: block;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.75rem;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 0;
+        }
+
+        @media (min-width: 769px) {
+            .nav-links {
+                display: flex;
+            }
+
+            #menu-btn {
+                display: none;
+            }
+        }
+
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: var(--maroon);
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 2rem;
+            gap: 2.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0.2, 0.05, 1);
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        #mobile-menu a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #mobile-menu .gold {
+            color: var(--gold);
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* SIGNIN FORM STYLES */
+        /* ─────────────────────────────────────────────── */
+
+        .signin-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 16px 40px;
+            width: 100%;
+        }
+
+        .signin-card {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px 24px;
+            border-radius: 32px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @media (min-width: 768px) {
+            .signin-card {
+                padding: 48px 40px;
+                border-radius: 48px;
+            }
+        }
+
+        .signin-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .signin-header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        @media (min-width: 768px) {
+            .signin-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        .signin-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .staff-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--maroon);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 6px 16px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .gold-line {
+            width: 60px;
+            height: 3px;
+            background: var(--gold);
+            margin: 16px auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .password-wrap {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gold);
+            cursor: pointer;
+            font-size: 1.1rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .toggle-password:hover {
+            opacity: 1;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--gold);
+            color: var(--maroon);
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-submit:hover::before {
+            left: 100%;
+        }
+
+        .signin-footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .signin-footer p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .signin-footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: opacity 0.2s;
+        }
+
+        .signin-footer a:hover {
+            opacity: 0.8;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--gold);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* ANIMATIONS */
+        /* ─────────────────────────────────────────────── */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--maroon);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+
+        .btn-submit.loading .spinner {
+            display: inline-block;
+        }
+
+        .btn-submit.loading .btn-text {
+            opacity: 0.8;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body class="mesh-bg">
+
+    <!-- Navigation -->
+    <nav>
+        <a href="index.html" class="logo-wrap">
+            <img src="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png" alt="AUI">
+            <div class="logo-text">
+                <span class="logo-main">AUI CHAPEL</span>
+                <span class="logo-small">CHAPEL OF MARY</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html#about">About</a>
+            <a href="index.html#mission">Our Mission</a>
+            <a href="index.html#schedule">Liturgy</a>
+            <a href="portal.html">Reflections</a>
+            <a href="staffsignup.html" class="nav-login">Staff Sign Up</a>
+        </div>
+
+        <button id="menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu">
+        <button onclick="document.getElementById('mobile-menu').classList.remove('active')"
+            style="align-self:flex-end; font-size:3.5rem; color:var(--gold); background:none; border:none; cursor:pointer; margin-bottom:40px;">×</button>
+        <a href="index.html#about" onclick="closeMenu()">About</a>
+        <a href="index.html#mission" onclick="closeMenu()">Our Mission</a>
+        <a href="index.html#schedule" onclick="closeMenu()">Liturgy</a>
+        <a href="portal.html" onclick="closeMenu()">Reflections</a>
+        <a href="staffsignup.html" class="gold" onclick="closeMenu()">Create Staff Account</a>
+        <a href="admin.html" style="font-size:1rem; opacity:0.6;" onclick="closeMenu()">Admin Entry</a>
+    </div>
+
+    <!-- Signin Container -->
+    <div class="signin-container">
+        <div class="signin-card glass">
+
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+
+            <div class="signin-header">
+                <div class="staff-badge">Staff Portal</div>
+                <h1 class="serif">Staff <span style="color: var(--gold);">Sign In</span></h1>
+                <div class="gold-line"></div>
+                <p>Welcome back. Sign in to access chapel management tools.</p>
+            </div>
+
+            <form id="signinForm" novalidate>
+
+                <!-- Email -->
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" placeholder="Enter your email"
+                        required>
+                    <div class="error-message" id="emailError">
+                        <i class="fas fa-exclamation-circle"></i> Please enter a valid email
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="password" name="password" class="form-input"
+                            placeholder="Enter your password" required>
+                        <button type="button" class="toggle-password" onclick="togglePassword('password', this)">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="passwordError">
+                        <i class="fas fa-exclamation-circle"></i> Please enter your password
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <span class="btn-text">Sign In</span>
+                    <span class="spinner"></span>
+                </button>
+
+            </form>
+
+            <div class="signin-footer">
+                <p>Don't have a staff account?</p>
+                <a href="staffsignup.html">Create Account</a>
+            </div>
+
+        </div>
+    </div>
+
+    <style>
+        .staff-toast-container {
+            position: fixed; top: 80px; left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex; flex-direction: column; gap: 10px;
+            min-width: 300px; max-width: 90%;
+            pointer-events: none;
+        }
+        .staff-toast {
+            background: rgba(74,4,4,0.95);
+            border-radius: 14px; padding: 16px 20px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transform: translateY(-20px); opacity: 0;
+            transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            backdrop-filter: blur(20px);
+            pointer-events: auto;
+        }
+        .staff-toast.show { transform: translateY(0); opacity: 1; }
+        .staff-toast.error { border: 1px solid rgba(255,68,68,0.3); background: rgba(255,68,68,0.12); }
+        .staff-toast-icon { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.1rem; }
+        .staff-toast.error .staff-toast-icon { background:rgba(255,68,68,0.2); color:#ff4444; }
+        .staff-toast-title { font-weight:700; font-size:14px; margin-bottom:3px; color:#ff4444; }
+        .staff-toast-msg { font-size:13px; color:rgba(255,255,255,0.8); }
+    </style>
+
+    <div class="staff-toast-container" id="staffToastContainer"></div>
+
+    <script>
+        function showToast(message) {
+            const container = document.getElementById('staffToastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'staff-toast error';
+            toast.innerHTML = `
+                <div class="staff-toast-icon"><i class="fas fa-exclamation-circle"></i></div>
+                <div>
+                    <div class="staff-toast-title">Sign In Failed</div>
+                    <div class="staff-toast-msg">${message}</div>
+                </div>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 5000);
+        }
+
+        // Mobile menu functions
+        document.getElementById('menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.add('active');
+        });
+
+        function closeMenu() {
+            document.getElementById('mobile-menu').classList.remove('active');
+        }
+
+        // Password visibility toggle
+        function togglePassword(fieldId, btn) {
+            const field = document.getElementById(fieldId);
+            const icon = btn.querySelector('i');
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        // Form validation and submission
+        document.getElementById('signinForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            // Reset errors
+            document.querySelectorAll('.error-message').forEach(err => err.classList.remove('show'));
+
+            let isValid = true;
+
+            // Validate email
+            const email = document.getElementById('email').value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('emailError').classList.add('show');
+                isValid = false;
+            }
+
+            // Validate password
+            const password = document.getElementById('password').value;
+            if (password.length === 0) {
+                document.getElementById('passwordError').classList.add('show');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.classList.add('loading');
+            submitBtn.disabled = true;
+
+            // ─── DEV/PROD API URL SWITCH ───
+            const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+            const workerUrl = isDev ? 'http://127.0.0.1:8787/api/auth/staff-signin' : '/api/auth/staff-signin';
+
+            try {
+                const response = await fetch(workerUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Sign in failed');
+                }
+
+                // Store session for use in admin page
+                sessionStorage.setItem('staff_session', JSON.stringify(result.session));
+                sessionStorage.setItem('staff_user', JSON.stringify(result.user));
+
+                // Redirect to admin dashboard
+                window.location.href = 'admin.html';
+
+            } catch (error) {
+                console.error('Staff signin error:', error);
+
+                const msg = (error.message || '').toLowerCase();
+                if (msg.includes('invalid') || msg.includes('credentials')) {
+                    showToast('Invalid email or password. Please try again.');
+                } else if (msg.includes('unauthorized') || msg.includes('staff access')) {
+                    showToast('Access denied. This login is for staff only.');
+                } else {
+                    showToast(error.message || 'Sign in failed. Please try again.');
+                }
+
+                submitBtn.classList.remove('loading');
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Real-time validation
+        document.getElementById('email').addEventListener('blur', function () {
+            const email = this.value.trim();
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email && !emailRegex.test(email)) {
+                document.getElementById('emailError').classList.add('show');
+            } else {
+                document.getElementById('emailError').classList.remove('show');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

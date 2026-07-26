@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Portal | AUI Chapel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Crimson+Pro:ital,wght@0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    <style>
+        :root {
+            --maroon: #4A0404;
+            --maroon-light: #6B0606;
+            --maroon-dark: #2D0202;
+            --gold: #FFD700;
+            --gold-dark: #B8860B;
+            --gold-dim: rgba(255, 215, 0, 0.15);
+            --success: #00C851;
+            --error: #ff4444;
+            --warning: #FF8C00;
+            --bg: #0a0000;
+            --card: rgba(74, 4, 4, 0.45);
+            --border: rgba(255, 215, 0, 0.12);
+            --text-dim: rgba(255, 255, 255, 0.5);
+            --sidebar-w: 260px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-mesh {
+            position: fixed; inset: 0; z-index: 0;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(74,4,4,0.6) 0px, transparent 55%),
+                radial-gradient(at 100% 100%, rgba(255,215,0,0.04) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(74,4,4,0.2) 0px, transparent 60%);
+        }
+
+        /* ─── SIDEBAR ─── */
+        .sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0;
+            width: var(--sidebar-w);
+            background: rgba(20, 2, 2, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            z-index: 100;
+            display: flex; flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.77, 0.2, 0.05, 1);
+        }
+
+        .sidebar-header {
+            padding: 28px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .sidebar-logo { width: 38px; height: 38px; object-fit: contain; }
+        .sidebar-logo-main { font-weight: 800; font-size: 0.95rem; color: white; }
+        .sidebar-logo-sub { font-size: 8px; color: var(--gold); font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; }
+
+        .sidebar-profile {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 12px;
+        }
+
+        .student-avatar {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.1rem; color: white;
+            border: 2px solid var(--gold);
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--maroon), var(--gold-dark));
+        }
+
+        .student-name { font-size: 13px; font-weight: 700; color: white; }
+        .student-rank {
+            font-size: 10px; color: var(--gold);
+            font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+
+        .nav-section-title {
+            font-size: 9px; font-weight: 700;
+            letter-spacing: 2px; text-transform: uppercase;
+            color: var(--text-dim); padding: 12px 24px 8px;
+        }
+
+        .nav-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 11px 24px;
+            color: rgba(255,255,255,0.6);
+            cursor: pointer; transition: all 0.2s;
+            font-size: 13px; font-weight: 600;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+        }
+
+        .nav-item:hover { color: white; background: rgba(255,215,0,0.05); }
+        .nav-item.active { color: var(--gold); background: rgba(255,215,0,0.08); border-left-color: var(--gold); }
+        .nav-item i { width: 18px; text-align: center; font-size: 14px; }
+
+        .sidebar-footer { padding: 16px 24px; border-top: 1px solid var(--border); }
+
+        .logout-btn {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 16px;
+            background: rgba(255,68,68,0.1);
+            border: 1px solid rgba(255,68,68,0.2);
+            border-radius: 10px; color: #ff6666;
+            cursor: pointer; font-size: 12px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            transition: all 0.2s; width: 100%;
+        }
+
+        .logout-btn:hover { background: rgba(255,68,68,0.2); }
+
+        /* ─── MAIN ─── */
+        .main { margin-left: var(--sidebar-w); min-height: 100vh; position: relative; z-index: 1; }
+
+        .topbar {
+            position: sticky; top: 0; z-index: 50;
+            background: rgba(10,0,0,0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+
+        .topbar-title { font-size: 1.1rem; font-weight: 800; }
+        .topbar-title span { color: var(--gold); font-family: 'Crimson Pro', serif; font-style: italic; }
+
+        .menu-toggle {
+            display: none; background: none; border: none;
+            color: var(--gold); font-size: 1.4rem; cursor: pointer;
+        }
+
+        /* ─── STREAK BANNER ─── */
+        .streak-banner {
+            background: linear-gradient(135deg, rgba(74,4,4,0.8), rgba(184,134,11,0.3));
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 20px; padding: 20px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; position: relative; overflow: hidden;
+        }
+
+        .streak-banner::before {
+            content: '🔥';
+            position: absolute; right: 20px; top: 50%;
+            transform: translateY(-50%);
+            font-size: 5rem; opacity: 0.07;
+        }
+
+        .streak-info { display: flex; align-items: center; gap: 20px; }
+        .streak-number { font-size: 3rem; font-weight: 800; color: var(--gold); line-height: 1; }
+        .streak-label { font-size: 12px; font-weight: 700; color: white; }
+        .streak-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+
+        .streak-stats { display: flex; gap: 24px; }
+        .streak-stat { text-align: center; }
+        .streak-stat-val { font-size: 1.3rem; font-weight: 800; color: var(--gold); }
+        .streak-stat-label { font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+
+        /* ─── PAGES ─── */
+        .page { display: none; padding: 32px; }
+        .page.active { display: block; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page.active > * { animation: fadeUp 0.5s ease-out both; }
+        .page.active > *:nth-child(2) { animation-delay: 0.05s; }
+        .page.active > *:nth-child(3) { animation-delay: 0.1s; }
+        .page.active > *:nth-child(4) { animation-delay: 0.15s; }
+
+        /* ─── GLASS CARD ─── */
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 24px; padding: 28px; margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1rem; font-weight: 800;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .section-title i { color: var(--gold); }
+
+        /* ─── REFLECTION CARD ─── */
+        .reflection-card {
+            background: linear-gradient(135deg, rgba(74,4,4,0.7), rgba(20,2,2,0.9));
+            border: 1px solid rgba(255,215,0,0.15);
+            border-radius: 24px; padding: 32px;
+            position: relative; overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .reflection-card::after {
+            content: '✝';
+            position: absolute; right: 24px; top: 20px;
+            font-size: 5rem; color: rgba(255,215,0,0.05);
+            pointer-events: none;
+        }
+
+        .reflection-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 999px; padding: 4px 14px;
+            font-size: 10px; font-weight: 700;
+            color: var(--gold); letter-spacing: 1px;
+            text-transform: uppercase; margin-bottom: 20px;
+        }
+
+        .reflection-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem; font-style: italic;
+            margin-bottom: 16px; line-height: 1.3;
+        }
+
+        .reflection-message {
+            font-size: 15px; color: rgba(255,255,255,0.8);
+            line-height: 1.8; margin-bottom: 20px;
+        }
+
+        .reflection-scripture {
+            font-size: 13px; color: var(--gold);
+            font-style: italic; font-weight: 600;
+            padding: 12px 16px;
+            background: rgba(255,215,0,0.05);
+            border-left: 3px solid var(--gold);
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 24px;
+        }
+
+        /* ─── ACTION BUTTONS ─── */
+        .reflection-actions {
+            display: flex; gap: 12px; flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .action-btn {
+            display: flex; align-items: center; gap: 8px;
+            padding: 11px 20px; border-radius: 12px;
+            font-size: 12px; font-weight: 700;
+            letter-spacing: 1px; text-transform: uppercase;
+            border: none; cursor: pointer; transition: all 0.3s;
+        }
+
+        .action-btn.podcast {
+            background: rgba(255,215,0,0.1);
+            border: 1px solid rgba(255,215,0,0.2);
+            color: var(--gold);
+        }
+
+        .action-btn.podcast:hover, .action-btn.podcast.active {
+            background: var(--gold); color: var(--maroon-dark);
+        }
+
+        .action-btn.pray {
+            background: rgba(0,200,81,0.1);
+            border: 1px solid rgba(0,200,81,0.2);
+            color: var(--success);
+        }
+
+        .action-btn.pray:hover, .action-btn.pray.done {
+            background: rgba(0,200,81,0.2);
+        }
+
+        .action-btn.pray.done { opacity: 0.7; cursor: default; }
+
+        .action-btn.read-done {
+            background: rgba(0,200,81,0.1);
+            border: 1px solid rgba(0,200,81,0.2);
+            color: var(--success);
+            cursor: default;
+        }
+
+        /* ─── POINTS POPUP ─── */
+        .points-popup {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--gold); color: var(--maroon-dark);
+            padding: 14px 24px; border-radius: 999px;
+            font-size: 14px; font-weight: 800;
+            box-shadow: 0 10px 40px rgba(255,215,0,0.4);
+            transform: translateY(100px); opacity: 0;
+            transition: all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+            z-index: 999; pointer-events: none;
+        }
+
+        .points-popup.show { transform: translateY(0); opacity: 1; }
+
+        /* ─── MILESTONE POPUP ─── */
+        .milestone-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(8px);
+            z-index: 500;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .milestone-overlay.show { opacity: 1; pointer-events: auto; }
+
+        .milestone-card {
+            background: linear-gradient(135deg, rgba(74,4,4,0.95), rgba(20,2,2,0.98));
+            border: 1px solid rgba(255,215,0,0.3);
+            border-radius: 28px; padding: 48px 40px;
+            text-align: center; max-width: 400px; width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+        }
+
+        .milestone-overlay.show .milestone-card { transform: scale(1); }
+        .milestone-emoji { font-size: 4rem; margin-bottom: 16px; display: block; }
+        .milestone-title { font-family: 'Crimson Pro', serif; font-size: 2rem; font-style: italic; color: var(--gold); margin-bottom: 12px; }
+        .milestone-msg { font-size: 14px; color: var(--text-dim); line-height: 1.6; margin-bottom: 28px; }
+        .milestone-close {
+            background: var(--gold); color: var(--maroon-dark);
+            border: none; padding: 12px 32px;
+            border-radius: 999px; font-weight: 800;
+            font-size: 13px; letter-spacing: 1px;
+            cursor: pointer; transition: all 0.3s;
+        }
+
+        /* ─── LEADERBOARD ─── */
+        .leaderboard-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.2s;
+        }
+
+        .leaderboard-item:last-child { border-bottom: none; }
+        .leaderboard-item.me { background: rgba(255,215,0,0.04); border-radius: 12px; padding: 14px 12px; margin: 0 -12px; }
+
+        .lb-rank { font-size: 1.2rem; width: 32px; text-align: center; flex-shrink: 0; }
+        .lb-avatar {
+            width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px; flex-shrink: 0;
+        }
+
+        .lb-name { flex: 1; }
+        .lb-name-main { font-weight: 700; font-size: 13px; }
+        .lb-name-sub { font-size: 11px; color: var(--text-dim); }
+        .lb-stats { text-align: right; }
+        .lb-streak { font-weight: 800; color: var(--gold); font-size: 13px; }
+        .lb-points { font-size: 11px; color: var(--text-dim); }
+
+        /* ─── BADGES ─── */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 16px;
+        }
+
+        .badge-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 16px; padding: 20px 12px;
+            text-align: center; transition: all 0.3s;
+        }
+
+        .badge-item.earned {
+            background: rgba(255,215,0,0.05);
+            border-color: rgba(255,215,0,0.2);
+        }
+
+        .badge-item:hover { transform: translateY(-4px); }
+        .badge-emoji { font-size: 2rem; margin-bottom: 8px; display: block; }
+        .badge-name { font-size: 11px; font-weight: 700; margin-bottom: 4px; }
+        .badge-desc { font-size: 10px; color: var(--text-dim); line-height: 1.4; }
+        .badge-item.locked { opacity: 0.4; filter: grayscale(1); }
+
+        /* ─── YOUTUBE ─── */
+        .youtube-wrap {
+            position: relative; padding-bottom: 56.25%;
+            border-radius: 16px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        .youtube-wrap iframe {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%; border: none;
+        }
+
+        /* ─── FACULTY BATTLE ─── */
+        .faculty-battle {
+            display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px;
+            align-items: center; margin-bottom: 8px;
+        }
+
+        .faculty-side { text-align: center; padding: 20px; }
+        .faculty-name { font-size: 1rem; font-weight: 800; margin-bottom: 6px; }
+        .faculty-score { font-size: 2.5rem; font-weight: 800; color: var(--gold); }
+        .faculty-vs { font-size: 1rem; font-weight: 800; color: var(--text-dim); }
+        .faculty-bar-wrap { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-top: 16px; }
+        .faculty-bar-fill { height: 100%; background: linear-gradient(90deg, var(--maroon), var(--gold)); transition: width 1.2s ease; }
+
+        /* ─── SETTINGS ─── */
+        .settings-section { margin-bottom: 32px; }
+        .settings-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px; display: block; }
+        .settings-value { font-size: 15px; font-weight: 700; color: white; }
+
+        .avatar-big {
+            width: 80px; height: 80px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 2rem; color: white;
+            border: 3px solid var(--gold); margin-bottom: 16px;
+        }
+
+        /* ─── DONATE ─── */
+        .donate-card {
+            background: linear-gradient(135deg, rgba(255,215,0,0.08), rgba(74,4,4,0.6));
+            border: 1px solid rgba(255,215,0,0.2);
+            border-radius: 24px; padding: 32px; text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .donate-title { font-family: 'Crimson Pro', serif; font-size: 2rem; font-style: italic; color: var(--gold); margin-bottom: 12px; }
+        .donate-sub { font-size: 14px; color: var(--text-dim); line-height: 1.7; margin-bottom: 28px; }
+
+        .amount-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
+
+        .amount-btn {
+            padding: 14px; border-radius: 12px;
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.04);
+            color: white; font-weight: 700; font-size: 14px;
+            cursor: pointer; transition: all 0.3s;
+        }
+
+        .amount-btn:hover, .amount-btn.selected {
+            background: rgba(255,215,0,0.1);
+            border-color: var(--gold); color: var(--gold);
+        }
+
+        .custom-amount {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 13px 16px;
+            color: white; font-size: 14px; font-weight: 600;
+            width: 100%; margin-bottom: 16px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .custom-amount:focus { outline: none; border-color: var(--gold); }
+        .custom-amount::placeholder { color: var(--text-dim); }
+
+        .donate-btn {
+            background: var(--gold); color: var(--maroon-dark);
+            border: none; padding: 16px 40px;
+            border-radius: 999px; font-weight: 800;
+            font-size: 13px; letter-spacing: 1.5px;
+            text-transform: uppercase; cursor: pointer;
+            transition: all 0.3s; width: 100%;
+        }
+
+        .donate-btn:hover { box-shadow: 0 0 40px rgba(255,215,0,0.3); transform: translateY(-2px); }
+        .donate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* ─── NO REFLECTION ─── */
+        .no-reflection {
+            text-align: center; padding: 60px 20px;
+        }
+
+        .no-reflection i { font-size: 3rem; color: var(--gold); opacity: 0.3; margin-bottom: 16px; display: block; }
+        .no-reflection h3 { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-style: italic; margin-bottom: 8px; }
+        .no-reflection p { font-size: 14px; color: var(--text-dim); }
+
+        /* ─── TOAST ─── */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+
+        .toast {
+            background: rgba(20,2,2,0.95);
+            border-radius: 14px; padding: 14px 18px;
+            display: flex; align-items: center; gap: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+            min-width: 280px; max-width: 360px;
+            backdrop-filter: blur(20px);
+        }
+
+        .toast.show { transform: translateX(0); }
+        .toast.success { border: 1px solid rgba(0,200,81,0.3); }
+        .toast.error { border: 1px solid rgba(255,68,68,0.3); }
+        .toast.info { border: 1px solid rgba(255,215,0,0.3); }
+        .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .toast.success .toast-icon { color: var(--success); }
+        .toast.error .toast-icon { color: var(--error); }
+        .toast.info .toast-icon { color: var(--gold); }
+        .toast-title { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+        .toast-msg { font-size: 12px; color: var(--text-dim); }
+
+        /* ─── SCROLLBAR ─── */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.4); }
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,215,0,0.2); border-radius: 2px; }
+
+        /* ─── RESPONSIVE ─── */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .page { padding: 20px 16px; }
+            .topbar { padding: 14px 16px; }
+            .streak-banner { flex-direction: column; gap: 16px; text-align: center; }
+            .streak-info { flex-direction: column; }
+            .streak-stats { justify-content: center; }
+            .faculty-battle { grid-template-columns: 1fr auto 1fr; }
+            .amount-grid { grid-template-columns: repeat(2, 1fr); }
+            .badges-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+
+<!-- Points Popup -->
+<div class="points-popup" id="pointsPopup">+10 pts ⭐</div>
+
+<!-- Milestone Overlay -->
+<div class="milestone-overlay" id="milestoneOverlay">
+    <div class="milestone-card">
+        <span class="milestone-emoji" id="milestoneEmoji">🔥</span>
+        <div class="milestone-title" id="milestoneTitle">Amazing!</div>
+        <div class="milestone-msg" id="milestoneMsg">Keep going!</div>
+        <button class="milestone-close" onclick="closeMilestone()">Praise God! 🙏</button>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <img src="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png" alt="AUI" class="sidebar-logo">
+        <div>
+            <div class="sidebar-logo-main">AUI Chapel</div>
+            <div class="sidebar-logo-sub">Student Sanctuary</div>
+        </div>
+    </div>
+
+    <div class="sidebar-profile">
+        <div class="student-avatar" id="sidebarAvatar">A</div>
+        <div>
+            <div class="student-name" id="sidebarName">Student</div>
+            <div class="student-rank" id="sidebarRank">🌱 Seeker</div>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+        <div class="nav-section-title">My Space</div>
+        <a class="nav-item active" onclick="showPage('home')" href="#">
+            <i class="fas fa-home"></i> Home
+        </a>
+        <a class="nav-item" onclick="showPage('leaderboard')" href="#">
+            <i class="fas fa-trophy"></i> Leaderboard
+        </a>
+        <a class="nav-item" onclick="showPage('badges')" href="#">
+            <i class="fas fa-medal"></i> My Badges
+        </a>
+
+        <div class="nav-section-title">Chapel</div>
+        <a class="nav-item" onclick="showPage('faculty')" href="#">
+            <i class="fas fa-flag"></i> Faculty Battle
+        </a>
+        <a class="nav-item" onclick="showPage('challenges')" href="#">
+            <i class="fas fa-bolt"></i> Challenges
+        </a>
+        <!-- <a class="nav-item" onclick="showPage('donate')" href="#">
+            <i class="fas fa-heart"></i> Support Chapel
+        </a> -->
+
+        <div class="nav-section-title">Account</div>
+        <a class="nav-item" onclick="showPage('settings')" href="#">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+    </nav>
+
+    <div class="sidebar-footer">
+        <button class="logout-btn" onclick="handleLogout()">
+            <i class="fas fa-sign-out-alt"></i> Sign Out
+        </button>
+    </div>
+</aside>
+
+<!-- Main -->
+<div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <div style="display:flex; align-items:center; gap:16px;">
+            <button class="menu-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <div class="topbar-title">Student <span>Sanctuary</span></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="display:flex; align-items:center; gap:6px; font-size:11px; color:var(--success);">
+                <div style="width:6px; height:6px; background:var(--success); border-radius:50%; animation:pulse 2s infinite;"></div>
+                Live
+            </div>
+            <div style="font-size:11px; color:var(--text-dim); font-weight:600;" id="topbarDate"></div>
+        </div>
+    </div>
+
+    <!-- ─── HOME PAGE ─── -->
+    <div class="page active" id="page-home">
+
+        <!-- Streak Banner -->
+        <div class="streak-banner">
+            <div class="streak-info">
+                <div class="streak-number" id="streakNumber">0</div>
+                <div>
+                    <div class="streak-label">🔥 Day Streak</div>
+                    <div class="streak-sub" id="streakSub">Start reading to build your streak!</div>
+                </div>
+            </div>
+            <div class="streak-stats">
+                <div class="streak-stat">
+                    <div class="streak-stat-val" id="statPoints">0</div>
+                    <div class="streak-stat-label">⭐ Points</div>
+                </div>
+                <div class="streak-stat">
+                    <div class="streak-stat-val" id="statLongest">0</div>
+                    <div class="streak-stat-label">🏆 Best Streak</div>
+                </div>
+                <div class="streak-stat">
+                    <div class="streak-stat-val" id="statBadges">0</div>
+                    <div class="streak-stat-label">🏅 Badges</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Reflection -->
+        <div id="reflectionSection">
+            <div class="no-reflection">
+                <i class="fas fa-spinner fa-spin"></i>
+                <h3>Loading today's reflection...</h3>
+                <p>Please wait</p>
+            </div>
+        </div>
+
+        <!-- YouTube Video -->
+        <div class="glass-card" id="youtubeSection" style="display:none;">
+            <div class="section-title"><i class="fas fa-play-circle"></i> Featured Video</div>
+            <div class="youtube-wrap">
+                <iframe id="youtubeFrame" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ─── LEADERBOARD PAGE ─── -->
+    <div class="page" id="page-leaderboard">
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-crown"></i> Top Students</div>
+            <div id="leaderboardList">
+                <div style="text-align:center; padding:40px; color:var(--text-dim);">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block;"></i>
+                    Loading leaderboard...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── BADGES PAGE ─── -->
+    <div class="page" id="page-badges">
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-medal"></i> My Badges</div>
+            <div class="badges-grid" id="badgesGrid">
+                <div style="text-align:center; padding:40px; color:var(--text-dim); grid-column:1/-1;">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block;"></i>
+                    Loading badges...
+                </div>
+            </div>
+        </div>
+
+        <!-- Rank Progress -->
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-star"></i> Your Rank</div>
+            <div id="rankSection" style="text-align:center; padding:20px 0;">
+                <div style="font-size:3rem; margin-bottom:12px;" id="rankEmoji">🌱</div>
+                <div style="font-size:1.5rem; font-weight:800; color:var(--gold); margin-bottom:8px;" id="rankName">Seeker</div>
+                <div style="font-size:13px; color:var(--text-dim); margin-bottom:20px;" id="rankDesc">Read reflections to earn points and level up!</div>
+                <div style="background:rgba(255,255,255,0.08); border-radius:4px; height:8px; overflow:hidden; max-width:400px; margin:0 auto;">
+                    <div id="rankBar" style="height:100%; background:linear-gradient(90deg, var(--maroon), var(--gold)); transition:width 1s ease; width:0%;"></div>
+                </div>
+                <div style="font-size:11px; color:var(--text-dim); margin-top:8px;" id="rankProgress">0 / 50 pts to next rank</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── FACULTY BATTLE PAGE ─── -->
+    <div class="page" id="page-faculty">
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-flag"></i> Faculty Battle — This Week</div>
+
+            <div style="display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin-bottom:28px;">
+
+                <!-- FACUS -->
+                <div style="background:linear-gradient(135deg,rgba(255,215,0,0.12),rgba(255,215,0,0.04)); border:2px solid rgba(255,215,0,0.3); border-radius:20px; padding:28px 20px; text-align:center;">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,215,0,0.6);text-transform:uppercase;margin-bottom:8px;">FACUS</div>
+                    <div style="font-size:3.5rem;font-weight:800;color:#FFD700;line-height:1;" id="facusScore">0</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:6px;" id="facusLabel">Reads This Week</div>
+                </div>
+
+                <!-- VS -->
+                <div style="text-align:center;">
+                    <div style="font-size:1.3rem;font-weight:800;color:rgba(255,255,255,0.15);">VS</div>
+                    <div style="font-size:1.4rem;margin-top:4px;">⚔️</div>
+                </div>
+
+                <!-- FAHUMS -->
+                <div style="background:linear-gradient(135deg,rgba(10,0,0,0.7),rgba(20,5,5,0.9)); border:2px solid rgba(255,255,255,0.08); border-radius:20px; padding:28px 20px; text-align:center;">
+                    <div style="font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:8px;">FAHUMS</div>
+                    <div style="font-size:3.5rem;font-weight:800;color:rgba(255,255,255,0.85);line-height:1;" id="fahumsScore">0</div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1px;margin-top:6px;" id="fahumsLabel">Reads This Week</div>
+                </div>
+            </div>
+
+            <!-- Dual coloured bars -->
+            <div style="display:flex; height:12px; border-radius:999px; overflow:hidden;">
+                <div id="facultyBarFacus" style="height:100%; background:#FFD700; transition:width 1.2s cubic-bezier(0.4,0,0.2,1); width:50%;"></div>
+                <div id="facultyBarFahums" style="height:100%; background:#0a0000; border-left:2px solid rgba(255,255,255,0.1); transition:width 1.2s cubic-bezier(0.4,0,0.2,1); flex:1;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                <span style="font-size:11px; font-weight:700; color:#FFD700;">FACUS <span id="facusPct">50%</span></span>
+                <span style="font-size:11px; font-weight:700; color:rgba(255,255,255,0.4);">FAHUMS <span id="fahumsPct">50%</span></span>
+            </div>
+
+            <!-- Winner banner -->
+            <div style="margin-top:20px; text-align:center; padding:16px; background:rgba(255,215,0,0.05); border-radius:14px; border:1px solid var(--border);">
+                <div style="font-size:1.1rem; font-weight:800;" id="facultyWinner">⚔️ Battle in progress!</div>
+                <div style="font-size:12px; color:var(--text-dim); margin-top:4px;">Read today's reflection to earn points for your faculty!</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── CHALLENGES PAGE ─── -->
+    <div class="page" id="page-challenges">
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-bolt"></i> Weekly Challenges</div>
+            <div id="challengesPortalList">
+                <div style="text-align:center; padding:40px; color:var(--text-dim);">
+                    <i class="fas fa-spinner fa-spin" style="font-size:2rem; margin-bottom:12px; display:block;"></i>
+                    Loading challenges...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── DONATE PAGE ─── -->
+    <div class="page" id="page-donate">
+        <div class="donate-card">
+            <div class="donate-title">Support the Chapel ❤️</div>
+            <div class="donate-sub">
+                Your donation helps keep the chapel running, supports events,<br>
+                and strengthens the faith community at AUI.
+            </div>
+
+            <div class="amount-grid">
+                <button class="amount-btn" onclick="selectAmount(500)">₦500</button>
+                <button class="amount-btn" onclick="selectAmount(1000)">₦1,000</button>
+                <button class="amount-btn" onclick="selectAmount(2000)">₦2,000</button>
+                <button class="amount-btn" onclick="selectAmount(5000)">₦5,000</button>
+                <button class="amount-btn" onclick="selectAmount(10000)">₦10,000</button>
+                <button class="amount-btn" onclick="selectAmount(0)">Custom</button>
+            </div>
+
+            <input type="number" class="custom-amount" id="customAmount" placeholder="Enter custom amount (₦)" min="100" style="display:none;">
+
+            <button class="donate-btn" id="donateBtn" onclick="handleDonate()">
+                <i class="fas fa-heart"></i> Donate Now
+            </button>
+        </div>
+
+        <div class="glass-card" style="text-align:center;">
+            <div style="font-size:2rem; margin-bottom:12px;">🙏</div>
+            <div style="font-family:'Crimson Pro',serif; font-size:1.3rem; font-style:italic; color:var(--gold); margin-bottom:8px;">"Each of you should give what you have decided in your heart to give"</div>
+            <div style="font-size:12px; color:var(--text-dim);">2 Corinthians 9:7</div>
+        </div>
+    </div>
+
+    <!-- ─── SETTINGS PAGE ─── -->
+    <div class="page" id="page-settings">
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-user"></i> My Profile</div>
+            <div style="display:flex; align-items:center; gap:20px; margin-bottom:32px;">
+                <div class="avatar-big" id="settingsAvatar">A</div>
+                <div>
+                    <div style="font-size:1.3rem; font-weight:800;" id="settingsName">—</div>
+                    <div style="font-size:12px; color:var(--gold); margin-top:4px;" id="settingsRank">🌱 Seeker</div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <span class="settings-label">Full Name</span>
+                <div class="settings-value" id="settingsFullName">—</div>
+            </div>
+            <div class="settings-section">
+                <span class="settings-label">Matric Number</span>
+                <div class="settings-value" id="settingsMatric">—</div>
+            </div>
+            <div class="settings-section">
+                <span class="settings-label">Email</span>
+                <div class="settings-value" id="settingsEmail">—</div>
+            </div>
+            <div class="settings-section">
+                <span class="settings-label">Faculty</span>
+                <div class="settings-value" id="settingsFaculty">—</div>
+            </div>
+            <div class="settings-section">
+                <span class="settings-label">Member Since</span>
+                <div class="settings-value" id="settingsJoined">—</div>
+            </div>
+        </div>
+
+        <div class="glass-card">
+            <div class="section-title"><i class="fas fa-sign-out-alt"></i> Account</div>
+            <button class="logout-btn" onclick="handleLogout()" style="max-width:200px;">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </button>
+        </div>
+    </div>
+
+</div><!-- end .main -->
+
+<script>
+    // ─── CONFIG ───
+    const isDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const API = isDev ? 'http://127.0.0.1:8787' : '';
+
+    // ─── XSS SANITIZER ───
+    function esc(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+    }
+
+    // ─── STATE ───
+    let studentSession = null;
+    let studentUser = null;
+    let studentProfile = null;
+    let studentStats = null;
+    let studentBadges = [];
+    let todayReflection = null;
+    let selectedDonateAmount = 1000;
+    let isSpeaking = false;
+    let hasReadToday = false;
+    let hasPrayedToday = false;
+    let hasListenedToday = false;
+
+    // ─── AUTH CHECK ───
+    function checkAuth() {
+        const session = sessionStorage.getItem('student_session');
+        const user = sessionStorage.getItem('student_user');
+        const profile = sessionStorage.getItem('student_profile');
+        if (!session || !user || !profile) {
+            window.location.href = 'studentsignin.html';
+            return false;
+        }
+        studentSession = JSON.parse(session);
+        studentUser = JSON.parse(user);
+        studentProfile = JSON.parse(profile);
+        return true;
+    }
+
+    // ─── RANKS ───
+    const RANKS = [
+        { name: 'Seeker', emoji: '🌱', min: 0, max: 49 },
+        { name: 'Learner', emoji: '📖', min: 50, max: 149 },
+        { name: 'Believer', emoji: '✝️', min: 150, max: 299 },
+        { name: 'Disciple', emoji: '🕊️', min: 300, max: 499 },
+        { name: 'Servant', emoji: '🌟', min: 500, max: 999 },
+        { name: 'Chapel Legend', emoji: '👑', min: 1000, max: Infinity },
+    ];
+
+    function getRank(points) {
+        return RANKS.find(r => points >= r.min && points <= r.max) || RANKS[0];
+    }
+
+    // ─── MILESTONE MESSAGES ───
+    const MILESTONES = {
+        3:   { emoji: '🌱', title: 'Seedling!', msg: '3 days in a row! You\'re growing in faith. Keep it up!' },
+        7:   { emoji: '🔥', title: 'Week Warrior!', msg: '7 days! You\'re on fire! God sees your dedication 🙏' },
+        14:  { emoji: '✨', title: 'Fortnight Faith!', msg: '2 weeks straight! Your consistency is inspiring!' },
+        30:  { emoji: '✝️', title: 'Faithful One!', msg: '30 days! You have shown true faithfulness. Amazing!' },
+        60:  { emoji: '👑', title: 'Devoted!', msg: '60 days! You are truly devoted. The chapel is proud of you!' },
+        100: { emoji: '🏆', title: 'Chapel Legend!', msg: '100 days! You are a legend in this chapel. Incredible!' },
+        365: { emoji: '😇', title: 'Saint!', msg: '365 days! A full year of faithfulness! You are truly a saint!' },
+    };
+
+    // ─── INIT UI ───
+    function initUI() {
+        const name = studentProfile?.fullName || studentUser?.email?.split('@')[0] || 'Student';
+        const initial = name.charAt(0).toUpperCase();
+        const color = getAvatarColor(name);
+
+        document.getElementById('sidebarAvatar').textContent = initial;
+        document.getElementById('sidebarAvatar').style.background = color;
+        document.getElementById('sidebarName').textContent = name.split(' ')[0];
+        document.getElementById('settingsAvatar').textContent = initial;
+        document.getElementById('settingsAvatar').style.background = color;
+        document.getElementById('settingsName').textContent = name;
+        document.getElementById('settingsFullName').textContent = studentProfile?.fullName || '—';
+        document.getElementById('settingsMatric').textContent = studentProfile?.matric || '—';
+        document.getElementById('settingsEmail').textContent = studentUser?.email || '—';
+        document.getElementById('settingsFaculty').textContent = studentProfile?.faculty || '—';
+        document.getElementById('settingsJoined').textContent = studentProfile?.created_at
+            ? new Date(studentProfile.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : '—';
+
+        updateDate();
+    }
+
+    function updateDate() {
+        document.getElementById('topbarDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+    }
+
+    // ─── LOAD STATS ───
+    async function loadStats() {
+        try {
+            const res = await fetch(`${API}/api/student/stats?student_id=${studentProfile.id}`);
+            if (res.ok) {
+                const data = await res.json();
+                studentStats = data.stats;
+                studentBadges = data.badges || [];
+                updateStatsUI();
+            }
+        } catch(e) {}
+    }
+
+    function updateStatsUI() {
+        if (!studentStats) return;
+        const streak = studentStats.current_streak || 0;
+        const points = studentStats.total_points || 0;
+        const longest = studentStats.longest_streak || 0;
+
+        document.getElementById('streakNumber').textContent = streak;
+        document.getElementById('statPoints').textContent = points;
+        document.getElementById('statLongest').textContent = longest;
+        document.getElementById('statBadges').textContent = studentBadges.length;
+
+        // Streak sub text
+        if (streak === 0) document.getElementById('streakSub').textContent = 'Start reading to build your streak!';
+        else if (streak === 1) document.getElementById('streakSub').textContent = 'Great start! Come back tomorrow!';
+        else document.getElementById('streakSub').textContent = `Keep going! You're on a roll 🙏`;
+
+        // Rank
+        const rank = getRank(points);
+        document.getElementById('sidebarRank').textContent = `${rank.emoji} ${rank.name}`;
+        document.getElementById('settingsRank').textContent = `${rank.emoji} ${rank.name}`;
+        document.getElementById('rankEmoji').textContent = rank.emoji;
+        document.getElementById('rankName').textContent = rank.name;
+
+        // Rank progress
+        const nextRank = RANKS.find(r => r.min > points);
+        if (nextRank) {
+            const pct = ((points - rank.min) / (nextRank.min - rank.min)) * 100;
+            document.getElementById('rankBar').style.width = `${Math.min(pct, 100)}%`;
+            document.getElementById('rankProgress').textContent = `${points} / ${nextRank.min} pts to ${nextRank.emoji} ${nextRank.name}`;
+            document.getElementById('rankDesc').textContent = `${nextRank.min - points} more points to become a ${nextRank.name}!`;
+        } else {
+            document.getElementById('rankBar').style.width = '100%';
+            document.getElementById('rankProgress').textContent = 'Maximum rank reached! 👑';
+            document.getElementById('rankDesc').textContent = 'You have reached the highest rank!';
+        }
+    }
+
+    // ─── LOAD REFLECTION ───
+    async function loadReflection() {
+        // 8 second timeout — never spin forever
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 8000);
+
+        try {
+            const res = await fetch(`${API}/api/reflections/today`, { signal: controller.signal });
+            clearTimeout(timeout);
+            if (res.ok) {
+                const data = await res.json();
+                todayReflection = data.reflection;
+                renderReflection(todayReflection);
+            } else {
+                renderReflection(null);
+            }
+        } catch(e) {
+            clearTimeout(timeout);
+            renderReflection(null);
+        }
+    }
+
+    function renderReflection(r) {
+        const section = document.getElementById('reflectionSection');
+
+        if (!r) {
+            section.innerHTML = `
+                <div class="no-reflection">
+                    <i class="fas fa-moon"></i>
+                    <h3>No Reflection Today Yet</h3>
+                    <p>Come back later — the chaplaincy will post today's reflection soon. 🙏</p>
+                    <button onclick="loadReflection()" style="
+                        margin-top:20px; background:rgba(255,215,0,0.1);
+                        border:1px solid rgba(255,215,0,0.2); border-radius:999px;
+                        color:var(--gold); padding:10px 24px; cursor:pointer;
+                        font-size:12px; font-weight:700; letter-spacing:1px;
+                        text-transform:uppercase;
+                    "><i class="fas fa-sync-alt"></i> Retry</button>
+                </div>`;
+            return;
+        }
+
+        // Check local storage for today's read status
+        const readKey = `read_${r.id}_${studentProfile?.id}`;
+        hasReadToday = localStorage.getItem(readKey) === 'true';
+        hasPrayedToday = localStorage.getItem(`pray_${r.id}_${studentProfile?.id}`) === 'true';
+        hasListenedToday = localStorage.getItem(`listen_${r.id}_${studentProfile?.id}`) === 'true';
+
+        section.innerHTML = `
+            <div class="reflection-card">
+                <div class="reflection-badge"><i class="fas fa-sun"></i> Today's Reflection</div>
+                <div class="reflection-title">${esc(r.title)}</div>
+                <div class="reflection-message">${esc(r.message)}</div>
+                ${r.scripture ? `<div class="reflection-scripture">📖 ${esc(r.scripture)}</div>` : ''}
+                ${r.music_url ? `<div style="background:rgba(255,215,0,0.06); border:1px solid var(--border); border-radius:12px; padding:14px 18px; margin-bottom:16px; font-size:13px; color:rgba(255,255,255,0.7);">🙏 <em>${esc(r.music_url)}</em></div>` : ''}
+                <div class="reflection-actions">
+                    ${hasReadToday
+                        ? `<button class="action-btn read-done"><i class="fas fa-check"></i> Read — +10 pts earned</button>`
+                        : `<button class="action-btn podcast" onclick="markRead()" id="readBtn"><i class="fas fa-book-open"></i> Mark as Read (+10 pts)</button>`
+                    }
+                    <button class="action-btn podcast ${hasListenedToday ? 'active' : ''}" onclick="togglePodcast()" id="podcastBtn">
+                        <i class="fas fa-headphones"></i> ${hasListenedToday ? 'Listening...' : 'Listen as Podcast'}
+                    </button>
+                    <button class="action-btn pray ${hasPrayedToday ? 'done' : ''}" onclick="markPrayed()" id="prayBtn" ${hasPrayedToday ? 'disabled' : ''}>
+                        <i class="fas fa-pray"></i> ${hasPrayedToday ? '🙏 Prayed — +5 pts earned' : 'I Prayed This (+5 pts)'}
+                    </button>
+                </div>
+            </div>`;
+
+        // Show YouTube video if available
+        if (r.youtube_url) {
+            const videoId = extractYoutubeId(r.youtube_url);
+            if (videoId) {
+                document.getElementById('youtubeSection').style.display = 'block';
+                document.getElementById('youtubeFrame').src = `https://www.youtube.com/embed/${videoId}`;
+            }
+        }
+
+        // Auto-mark as read after 10 seconds
+        if (!hasReadToday) {
+            setTimeout(() => {
+                if (!hasReadToday) markRead(true);
+            }, 10000);
+        }
+    }
+
+    // ─── MARK READ ───
+    async function markRead(auto = false) {
+        if (hasReadToday || !todayReflection || !studentProfile) return;
+        hasReadToday = true;
+
+        const readBtn = document.getElementById('readBtn');
+        if (readBtn) {
+            readBtn.innerHTML = '<i class="fas fa-check"></i> Read — +10 pts earned';
+            readBtn.className = 'action-btn read-done';
+        }
+
+        localStorage.setItem(`read_${todayReflection.id}_${studentProfile.id}`, 'true');
+        showPointsPopup('+10 pts ⭐');
+
+        try {
+            const res = await fetch(`${API}/api/reflections/read`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_id: studentProfile.id,
+                    reflection_id: todayReflection.id,
+                    listened: hasListenedToday,
+                    prayed: hasPrayedToday,
+                })
+            });
+
+            if (res.ok) {
+                const data = await res.json();
+                await loadStats();
+                // Check for milestone
+                const streak = studentStats?.current_streak || 0;
+                if (MILESTONES[streak]) showMilestone(MILESTONES[streak]);
+            }
+        } catch(e) {}
+    }
+
+    // ─── MARK PRAYED ───
+    async function markPrayed() {
+        if (hasPrayedToday || !todayReflection || !studentProfile) return;
+        hasPrayedToday = true;
+
+        const prayBtn = document.getElementById('prayBtn');
+        if (prayBtn) {
+            prayBtn.innerHTML = '<i class="fas fa-pray"></i> 🙏 Prayed — +5 pts earned';
+            prayBtn.className = 'action-btn pray done';
+            prayBtn.disabled = true;
+        }
+
+        localStorage.setItem(`pray_${todayReflection.id}_${studentProfile.id}`, 'true');
+        showPointsPopup('+5 pts 🙏');
+        showToast('Prayer Recorded 🙏', 'God hears your prayers. +5 points earned!', 'success');
+
+        try {
+            await fetch(`${API}/api/reflections/read`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_id: studentProfile.id,
+                    reflection_id: todayReflection.id,
+                    listened: hasListenedToday,
+                    prayed: true,
+                })
+            });
+            await loadStats();
+        } catch(e) {}
+    }
+
+    // ─── PODCAST (Text to Speech) ───
+    function togglePodcast() {
+        if (!todayReflection) return;
+
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            const btn = document.getElementById('podcastBtn');
+            if (btn) btn.innerHTML = '<i class="fas fa-headphones"></i> Listen as Podcast';
+            return;
+        }
+
+        const text = `${todayReflection.title}. ${todayReflection.message}. ${todayReflection.scripture ? `Scripture: ${todayReflection.scripture}` : ''}`;
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+
+        utterance.onstart = () => {
+            isSpeaking = true;
+            const btn = document.getElementById('podcastBtn');
+            if (btn) { btn.innerHTML = '<i class="fas fa-stop"></i> Stop Podcast'; btn.classList.add('active'); }
+            if (!hasListenedToday) {
+                hasListenedToday = true;
+                localStorage.setItem(`listen_${todayReflection.id}_${studentProfile.id}`, 'true');
+                showPointsPopup('+5 pts 🎧');
+                showToast('Podcast Started 🎧', 'Listening earns you +5 points!', 'info');
+            }
+        };
+
+        utterance.onend = () => {
+            isSpeaking = false;
+            const btn = document.getElementById('podcastBtn');
+            if (btn) { btn.innerHTML = '<i class="fas fa-headphones"></i> Listen as Podcast'; btn.classList.remove('active'); }
+        };
+
+        window.speechSynthesis.speak(utterance);
+    }
+
+    function extractYoutubeId(url) {
+        const regex = /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/;
+        const match = url?.match(regex);
+        return match ? match[1] : null;
+    }
+
+    // ─── LEADERBOARD ───
+    async function loadLeaderboard() {
+        try {
+            const res = await fetch(`${API}/api/leaderboard`);
+            if (res.ok) {
+                const data = await res.json();
+                renderLeaderboard(data.leaderboard || []);
+            }
+        } catch(e) {}
+    }
+
+    function renderLeaderboard(list) {
+        const medals = ['🥇', '🥈', '🥉'];
+        if (!list.length) {
+            document.getElementById('leaderboardList').innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-dim);">No data yet — be the first!</div>`;
+            return;
+        }
+        document.getElementById('leaderboardList').innerHTML = list.map((s, i) => {
+            const isMe = s.student_id === studentProfile?.id;
+            return `
+                <div class="leaderboard-item ${isMe ? 'me' : ''}">
+                    <div class="lb-rank">${medals[i] || `#${i+1}`}</div>
+                    <div class="lb-avatar" style="background:${getAvatarColor(s.name)}">${esc(s.name?.charAt(0)?.toUpperCase()) || '?'}</div>
+                    <div class="lb-name">
+                        <div class="lb-name-main">${esc(formatName(s.name))} ${isMe ? '<span style="color:var(--gold);font-size:10px;">(You)</span>' : ''}</div>
+                        <div class="lb-name-sub">${esc(s.faculty || '')}</div>
+                    </div>
+                    <div class="lb-stats">
+                        <div class="lb-streak">🔥 ${esc(String(s.streak))} days</div>
+                        <div class="lb-points">⭐ ${esc(String(s.points))} pts</div>
+                    </div>
+                </div>`;
+        }).join('');
+    }
+
+    function formatName(fullName) {
+        if (!fullName) return 'Unknown';
+        const parts = fullName.trim().split(' ');
+        if (parts.length === 1) return parts[0];
+        return `${parts[0]} ${parts[parts.length - 1].charAt(0)}.`;
+    }
+
+    // ─── BADGES ───
+    const ALL_BADGES = [
+        { icon: '👣', name: 'First Step', desc: 'Read your first reflection', streak: 0, points: 10 },
+        { icon: '🌱', name: 'Seedling', desc: '3-day streak', streak: 3, points: 0 },
+        { icon: '🔥', name: 'Week Warrior', desc: '7-day streak', streak: 7, points: 0 },
+        { icon: '✨', name: 'Fortnight Faith', desc: '14-day streak', streak: 14, points: 0 },
+        { icon: '✝️', name: 'Faithful One', desc: '30-day streak', streak: 30, points: 0 },
+        { icon: '👑', name: 'Devoted', desc: '60-day streak', streak: 60, points: 0 },
+        { icon: '🏆', name: 'Chapel Legend', desc: '100-day streak', streak: 100, points: 0 },
+        { icon: '😇', name: 'Saint', desc: '365-day streak', streak: 365, points: 0 },
+        { icon: '💯', name: 'Century', desc: 'Earn 100 points', streak: 0, points: 100 },
+        { icon: '🙏', name: 'Prayer Warrior', desc: 'Pray 30 times', streak: 0, points: 0 },
+        { icon: '🌅', name: 'Early Bird', desc: 'Read before 9AM', streak: 0, points: 0 },
+        { icon: '🌙', name: 'Night Owl', desc: 'Read after 9PM', streak: 0, points: 0 },
+        { icon: '🎧', name: 'Podcast Lover', desc: 'Listen 10 times', streak: 0, points: 0 },
+    ];
+
+    function renderBadges() {
+        const earnedNames = new Set(studentBadges.map(b => b.badges?.name));
+        document.getElementById('badgesGrid').innerHTML = ALL_BADGES.map(b => {
+            const earned = earnedNames.has(b.name);
+            return `
+                <div class="badge-item ${earned ? 'earned' : 'locked'}">
+                    <span class="badge-emoji">${b.icon}</span>
+                    <div class="badge-name">${b.name}</div>
+                    <div class="badge-desc">${b.desc}</div>
+                    ${earned ? '<div style="font-size:10px;color:var(--success);margin-top:6px;font-weight:700;">✅ Earned!</div>' : ''}
+                </div>`;
+        }).join('');
+    }
+
+    // ─── CHALLENGES ───
+    async function loadChallenges() {
+        try {
+            const res = await fetch(`${API}/api/challenges/active`);
+            if (res.ok) {
+                const data = await res.json();
+                renderChallenges(data.challenges || []);
+            }
+        } catch(e) {}
+    }
+
+    function renderChallenges(challenges) {
+        const el = document.getElementById('challengesPortalList');
+        if (!challenges.length) {
+            el.innerHTML = `<div style="text-align:center;padding:40px;color:var(--text-dim);">
+                <i class="fas fa-trophy" style="font-size:2.5rem;opacity:0.3;margin-bottom:12px;display:block;"></i>
+                <p>No active challenges right now.<br>Check back soon!</p>
+            </div>`;
+            return;
+        }
+        el.innerHTML = challenges.map(c => {
+            const endsAt = new Date(c.ends_at);
+            const daysLeft = Math.ceil((endsAt - new Date()) / (1000 * 60 * 60 * 24));
+            return `
+            <div style="background:linear-gradient(135deg,rgba(74,4,4,0.5),rgba(20,2,2,0.7));border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                    <div style="font-weight:800;font-size:1rem;">${esc(c.title)}</div>
+                    <div style="background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.2);border-radius:999px;padding:4px 12px;font-size:10px;font-weight:700;color:var(--gold);white-space:nowrap;">${daysLeft}d left</div>
+                </div>
+                <div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:16px;">${esc(c.description)}</div>
+                <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--gold);"><i class="fas fa-star"></i> ${esc(String(c.points_reward))} pts reward</div>
+                    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-dim);"><i class="fas fa-calendar"></i> Ends ${endsAt.toLocaleDateString()}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ─── FACULTY BATTLE ───
+    async function loadFacultyBattle() {
+        try {
+            const res = await fetch(`${API}/api/faculty/battle`);
+            if (res.ok) {
+                const data = await res.json();
+                const facus = data.facus || 0;
+                const fahums = data.fahums || 0;
+                const facusStudents = data.facusStudents || 0;
+                const fahumsStudents = data.fahumsStudents || 0;
+
+                document.getElementById('facusScore').textContent = facus || facusStudents;
+                document.getElementById('fahumsScore').textContent = fahums || fahumsStudents;
+                
+                const showingStudents = facus === 0 && fahums === 0;
+                const facusLabel = document.getElementById('facusLabel');
+                const fahumsLabel = document.getElementById('fahumsLabel');
+                if (facusLabel) facusLabel.textContent = showingStudents ? 'Students' : 'Reads This Week';
+                if (fahumsLabel) fahumsLabel.textContent = showingStudents ? 'Students' : 'Reads This Week';
+
+                const barFacus = facus > 0 || fahums > 0 ? facus : facusStudents;
+                const barFahums = facus > 0 || fahums > 0 ? fahums : fahumsStudents;
+                const total = barFacus + barFahums || 1;
+                const pct = Math.round((barFacus / total) * 100);
+
+                document.getElementById('facultyBarFacus').style.width = `${pct}%`;
+                document.getElementById('facultyBarFahums').style.width = `${100 - pct}%`;
+                document.getElementById('facusPct').textContent = `${pct}%`;
+                document.getElementById('fahumsPct').textContent = `${100 - pct}%`;
+
+                let winner = '⚔️ Battle in progress!';
+                if (facus > fahums) winner = '🏆 FACUS is leading!';
+                else if (fahums > facus) winner = '🏆 FAHUMS is leading!';
+                else if (facus > 0) winner = '⚖️ It\'s a tie!';
+                document.getElementById('facultyWinner').textContent = winner;
+            }
+        } catch(e) {}
+    }
+
+    // ─── DONATE ───
+    function selectAmount(amount) {
+        document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+        event.target.classList.add('selected');
+        const custom = document.getElementById('customAmount');
+        if (amount === 0) {
+            custom.style.display = 'block';
+            selectedDonateAmount = 0;
+        } else {
+            custom.style.display = 'none';
+            selectedDonateAmount = amount;
+        }
+    }
+
+    function handleDonate() {
+        const customInput = document.getElementById('customAmount');
+        let amount = selectedDonateAmount;
+        if (amount === 0) amount = parseInt(customInput.value) || 0;
+
+        if (amount < 100) {
+            showToast('Invalid Amount', 'Minimum donation is ₦100', 'error');
+            return;
+        }
+
+        // Check Paystack loaded
+        if (typeof PaystackPop === 'undefined') {
+            showToast('Error', 'Payment system not loaded. Please refresh and try again.', 'error');
+            return;
+        }
+
+        // Get email — required by Paystack, must be a real string
+        const email = studentUser && studentUser.email ? studentUser.email : 'student@augustineuniversity.edu.ng';
+        const fullName = studentProfile && studentProfile.fullName ? studentProfile.fullName : '';
+        const faculty = studentProfile && studentProfile.faculty ? studentProfile.faculty : '';
+        const studentId = studentProfile && studentProfile.id ? studentProfile.id : null;
+
+        const btn = document.getElementById('donateBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        const ref = 'aui_chapel_' + Date.now();
+
+        fetch(`${API}/api/config/paystack-key`)
+            .then(r => r.ok ? r.json() : Promise.reject())
+            .catch(() => ({ key: '' }))
+            .then(cfg => {
+                if (!cfg.key) {
+                    showToast('Error', 'Payment not configured. Contact admin.', 'error');
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-heart"></i> Donate Now';
+                    return;
+                }
+                const handler = PaystackPop.setup({
+                    key: cfg.key,
+                    email: email,
+                    amount: amount * 100,
+                    currency: 'NGN',
+                    ref: ref,
+                    metadata: {
+                        custom_fields: [
+                            { display_name: 'Full Name', variable_name: 'full_name', value: fullName },
+                            { display_name: 'Faculty', variable_name: 'faculty', value: faculty },
+                        ]
+                    },
+                    callback: function(response) {
+                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+                        fetch(API + '/api/donate/verify', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                reference: response.reference,
+                                student_id: studentId,
+                                amount: amount,
+                            })
+                        })
+                        .then(function(res) { return res.json(); })
+                        .then(function() {
+                            showToast('Thank You! 🙏', '₦' + amount.toLocaleString() + ' donation received. God bless you!', 'success');
+                            showMilestone({ emoji: '❤️', title: 'God Bless You!', msg: 'Your donation of ₦' + amount.toLocaleString() + ' will help the AUI Chapel community. Thank you! 🙏' });
+                        })
+                        .catch(function() {
+                            showToast('Note', 'Payment received! Thank you 🙏', 'success');
+                        })
+                        .finally(function() {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="fas fa-heart"></i> Donate Now';
+                        });
+                    },
+                    onClose: function() {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-heart"></i> Donate Now';
+                    }
+                });
+                handler.openIframe();
+            });
+    }
+
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = src; script.onload = resolve; script.onerror = reject;
+            document.head.appendChild(script);
+        });
+    }
+
+    // ─── NAVIGATION ───
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(`page-${pageId}`).classList.add('active');
+        document.querySelectorAll('.nav-item').forEach(n => {
+            if (n.getAttribute('onclick')?.includes(pageId)) n.classList.add('active');
+        });
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+        if (pageId === 'leaderboard') loadLeaderboard();
+        if (pageId === 'badges') renderBadges();
+        if (pageId === 'faculty') loadFacultyBattle();
+        if (pageId === 'challenges') loadChallenges();
+    }
+
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+    }
+
+    // ─── POINTS POPUP ───
+    function showPointsPopup(text) {
+        const el = document.getElementById('pointsPopup');
+        el.textContent = text;
+        el.classList.add('show');
+        setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    // ─── MILESTONE ───
+    function showMilestone(m) {
+        document.getElementById('milestoneEmoji').textContent = m.emoji;
+        document.getElementById('milestoneTitle').textContent = m.title;
+        document.getElementById('milestoneMsg').textContent = m.msg;
+        document.getElementById('milestoneOverlay').classList.add('show');
+    }
+
+    function closeMilestone() {
+        document.getElementById('milestoneOverlay').classList.remove('show');
+    }
+
+    // ─── TOAST ───
+    function showToast(title, msg, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle' };
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <div class="toast-icon"><i class="fas ${icons[type]}"></i></div>
+            <div class="toast-text">
+                <div class="toast-title">${title}</div>
+                <div class="toast-msg">${msg}</div>
+            </div>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.add('show'), 10);
+        setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 4000);
+    }
+
+    // ─── LOGOUT ───
+    function handleLogout() {
+        sessionStorage.removeItem('student_session');
+        sessionStorage.removeItem('student_user');
+        sessionStorage.removeItem('student_profile');
+        window.location.href = 'studentsignin.html';
+    }
+
+    // ─── AVATAR COLOR ───
+    function getAvatarColor(name) {
+        const colors = [
+            'linear-gradient(135deg, #4A0404, #B8860B)',
+            'linear-gradient(135deg, #1a3a6b, #4488ff)',
+            'linear-gradient(135deg, #1a5c1a, #00C851)',
+            'linear-gradient(135deg, #5c1a5c, #cc44cc)',
+            'linear-gradient(135deg, #5c3a1a, #ff8c00)',
+        ];
+        const i = (name?.charCodeAt(0) || 0) % colors.length;
+        return colors[i];
+    }
+
+    // ─── SMART REFRESH — never interrupt video or reading ───
+    function isVideoPlaying() {
+        // Check if YouTube iframe is visible and user is on home page
+        const ytSection = document.getElementById('youtubeSection');
+        const homePage = document.getElementById('page-home');
+        return homePage?.classList.contains('active') && ytSection?.style.display !== 'none';
+    }
+
+    function isPodcastPlaying() {
+        return isSpeaking === true;
+    }
+
+    function silentRefresh() {
+        // Only refresh stats silently — never interrupt podcast
+        if (!isPodcastPlaying()) {
+            loadStats();
+        }
+    }
+
+    function smartRefreshReflection() {
+        // Only refresh reflection if NOT watching video AND NOT listening to podcast
+        if (!isVideoPlaying() && !isPodcastPlaying()) {
+            loadReflection();
+        }
+    }
+
+    // Refresh stats every 2 minutes silently (points, streak update)
+    setInterval(silentRefresh, 120000);
+
+    // Only check for new reflection every 10 minutes AND only if not watching video
+    setInterval(smartRefreshReflection, 600000);
+
+    // When tab becomes visible again — refresh stats only if nothing playing
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden && !isPodcastPlaying() && !isVideoPlaying()) {
+            silentRefresh();
+        }
+    });
+
+    // ─── INIT ───
+    if (checkAuth()) {
+        initUI();
+        loadStats();
+        loadReflection();
+    }
+</script>
+</body>
+</html>

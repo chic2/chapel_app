@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AUI Chapel | Mother of the Church</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;700&family=Crimson+Pro:ital,wght@0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+   
+
+    <style>
+        :root {
+            --maroon: #4A0404;
+            --gold: #FFD700;
+            --gold-dark: #B8860B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #0a0000;
+            color: white;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        .serif {
+            font-family: 'Crimson Pro', serif;
+        }
+
+        .mesh-bg {
+            background-image:
+                radial-gradient(at 0% 0%, rgba(74, 4, 4, 0.5) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(255, 215, 0, 0.05) 0px, transparent 50%);
+        }
+
+        .glass {
+            background: rgba(74, 4, 4, 0.45);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.9s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* NAV & MOBILE MENU - FIXED FOR FULL WIDTH */
+        /* ─────────────────────────────────────────────── */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(74, 4, 4, 0.45);
+            -webkit-backdrop-filter: blur(16px);
+            backdrop-filter: blur(16px);
+            width: 100%;
+            /* Ensure full width */
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .logo-wrap img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo-main {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-small {
+            font-size: 9px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: none;
+            align-items: center;
+            gap: 40px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-left: auto;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-login {
+            background: var(--gold);
+            color: var(--maroon);
+            padding: 8px 20px;
+            border-radius: 999px;
+            transition: transform 0.2s;
+        }
+
+        .nav-login:hover {
+            transform: scale(1.05);
+        }
+
+        #menu-btn {
+            display: block;
+            background: none;
+            border: none;
+            color: var(--gold);
+            font-size: 1.75rem;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 0;
+            /* Remove default button padding */
+        }
+
+        @media (min-width: 769px) {
+            .nav-links {
+                display: flex;
+            }
+
+            #menu-btn {
+                display: none;
+            }
+        }
+
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: var(--maroon);
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 2rem;
+            gap: 2.5rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            transform: translateX(100%);
+            transition: transform 0.6s cubic-bezier(0.77, 0.2, 0.05, 1);
+            width: 100vw;
+            /* Full viewport width */
+            height: 100vh;
+            /* Full viewport height */
+        }
+
+        #mobile-menu.active {
+            transform: translateX(0);
+        }
+
+        #mobile-menu a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #mobile-menu .gold {
+            color: var(--gold);
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* HERO - FIXED FOR FULL WIDTH */
+        /* ─────────────────────────────────────────────── */
+
+        header {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            /* Full width */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        header video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            padding: 0 1.5rem;
+            animation: fadeInUp 1s ease-out forwards;
+            width: 100%;
+            /* Full width */
+            max-width: 100%;
+            /* Prevent overflow */
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            background: rgba(255, 215, 0, 0.05);
+            color: var(--gold);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+
+        h1.serif {
+            font-size: 4.5rem;
+            line-height: 0.95;
+            font-weight: 700;
+            margin-bottom: 24px;
+        }
+
+        @media (min-width: 768px) {
+            h1.serif {
+                font-size: 7rem;
+            }
+        }
+
+        .gold-gradient {
+            background: linear-gradient(to bottom, var(--gold), #ffeb99);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-style: italic;
+        }
+
+        .hero-p {
+            color: rgba(255, 255, 255, 0.65);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto 48px;
+            font-weight: 300;
+            line-height: 1.7;
+            letter-spacing: 0.5px;
+        }
+
+        @media (min-width: 768px) {
+            .hero-p {
+                font-size: 1.125rem;
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (min-width: 768px) {
+            .hero-buttons {
+                flex-direction: row;
+            }
+        }
+
+        .btn-gold {
+            background: var(--gold);
+            color: var(--maroon);
+            font-weight: 800;
+            padding: 18px 48px;
+            border-radius: 16px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .btn-gold:hover {
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.35);
+            transform: translateY(-3px);
+        }
+
+        .btn-light {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: color 0.25s;
+        }
+
+        .btn-light:hover {
+            color: white;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 215, 0, 0.35);
+            font-size: 9px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* SECTIONS – GENERAL - FIXED FOR FULL WIDTH */
+        /* ─────────────────────────────────────────────── */
+
+        section {
+            padding: 120px 0;
+            /* Remove horizontal padding */
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            /* Full width */
+        }
+
+        /* Add horizontal padding only on larger screens */
+        @media (min-width: 768px) {
+            section {
+                padding: 120px 24px;
+            }
+        }
+
+        .container {
+            width: 100%;
+            /* Full width on mobile */
+            max-width: 100%;
+            /* Override max-width on mobile */
+            margin: 0;
+            /* Remove auto margins on mobile */
+            padding: 0 16px;
+            /* Add slight padding for readability */
+        }
+
+        /* Restore container constraints on larger screens */
+        @media (min-width: 768px) {
+            .container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        h2.serif {
+            font-size: 3.5rem;
+            line-height: 1;
+            margin-bottom: 32px;
+        }
+
+        @media (min-width: 768px) {
+            h2.serif {
+                font-size: 5rem;
+            }
+        }
+
+        .gold-line {
+            width: 80px;
+            height: 4px;
+            background: var(--gold);
+            margin: 24px auto;
+        }
+
+        .maroon-line {
+            width: 48px;
+            height: 3px;
+            background: var(--maroon);
+            margin: 24px 0;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* BIBLE VERSE CARD - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        #verse-card {
+            max-width: 900px;
+            margin: -80px auto 0;
+            padding: 60px 20px;
+            /* Reduced horizontal padding */
+            text-align: center;
+            border-radius: 48px;
+            width: calc(100% - 32px);
+            /* Full width minus margins */
+        }
+
+        @media (min-width: 768px) {
+            #verse-card {
+                padding: 60px 40px;
+                width: auto;
+            }
+        }
+
+        #verse-text {
+            font-size: 1.8rem;
+            /* Slightly smaller on mobile */
+            line-height: 1.35;
+            font-weight: 300;
+            font-style: italic;
+        }
+
+        @media (min-width: 768px) {
+            #verse-text {
+                font-size: 2.2rem;
+            }
+        }
+
+        #verse-ref {
+            margin-top: 32px;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: 4px;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* ABOUT & MISSION - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        .two-col {
+            display: grid;
+            gap: 64px;
+            padding: 0 16px;
+            /* Add padding to content only */
+        }
+
+        @media (min-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr 2fr;
+                padding: 0;
+            }
+        }
+
+        .mission-img-wrap {
+            position: relative;
+            width: 100%;
+        }
+
+        .mission-img-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -40px;
+            background: rgba(74, 4, 4, 0.4);
+            filter: blur(80px);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .mission-img {
+            width: 100%;
+            border-radius: 48px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.6);
+            transition: all 0.8s;
+            filter: grayscale(80%);
+            display: block;
+            /* Remove extra space */
+        }
+
+        .mission-img-wrap:hover .mission-img {
+            filter: grayscale(0%);
+            transform: scale(1.03);
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* SCHEDULE - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        .schedule-layout {
+            display: grid;
+            gap: 32px;
+            padding: 0 16px;
+            /* Add padding to content */
+        }
+
+        @media (min-width: 1024px) {
+            .schedule-layout {
+                grid-template-columns: 2fr 1fr;
+                padding: 0;
+            }
+        }
+
+        .mass-card {
+            padding: 24px;
+            /* Slightly reduced on mobile */
+            border-radius: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            transition: all 0.4s;
+        }
+
+        @media (min-width: 768px) {
+            .mass-card {
+                padding: 32px;
+            }
+        }
+
+        .mass-card:hover {
+            border-color: rgba(255, 215, 0, 0.4) !important;
+        }
+
+        .mass-row {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .icon-box {
+            width: 56px;
+            height: 56px;
+            border-radius: 16px;
+            background: rgba(255, 215, 0, 0.08);
+            color: var(--gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            transition: all 0.4s;
+        }
+
+        .mass-card:hover .icon-box {
+            background: var(--gold);
+            color: var(--maroon);
+        }
+
+        .time-big {
+            font-family: 'Crimson Pro', serif;
+            font-size: 2.2rem;
+            /* Smaller on mobile */
+            font-weight: 700;
+        }
+
+        @media (min-width: 768px) {
+            .time-big {
+                font-size: 2.8rem;
+            }
+        }
+
+        .small-card {
+            padding: 24px;
+            /* Reduced on mobile */
+            border-radius: 40px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            transition: background 0.3s;
+        }
+
+        @media (min-width: 768px) {
+            .small-card {
+                padding: 32px;
+            }
+        }
+
+        .small-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .date-box {
+            width: 56px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--maroon);
+            flex-shrink: 0;
+        }
+
+        .date-box small {
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .date-box span {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* GALLERY - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            /* Single column on mobile */
+            gap: 24px;
+            /* Reduced gap */
+            margin-top: 64px;
+            padding: 0 16px;
+            /* Add padding */
+        }
+
+        @media (min-width: 640px) {
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 32px;
+                padding: 0;
+            }
+        }
+
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 32px;
+            aspect-ratio: 4/5;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            width: 100%;
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.8s ease;
+            filter: grayscale(85%);
+            display: block;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.12);
+            filter: grayscale(0%);
+        }
+
+        .gallery-caption {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.85), transparent);
+            display: flex;
+            align-items: flex-end;
+            padding: 32px 32px 40px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .gallery-item:hover .gallery-caption {
+            opacity: 1;
+        }
+
+        .caption-text {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* TESTIMONIALS - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        .testimonials-grid {
+            display: grid;
+            gap: 40px;
+            padding: 0 16px;
+            /* Add padding */
+        }
+
+        @media (min-width: 768px) {
+            .testimonials-grid {
+                grid-template-columns: 1fr 1fr;
+                padding: 0;
+            }
+        }
+
+        .quote {
+            padding: 24px;
+            /* Reduced on mobile */
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 300;
+            border-left: 3px solid rgba(255, 215, 0, 0.25);
+        }
+
+        @media (min-width: 768px) {
+            .quote {
+                padding: 32px;
+            }
+        }
+
+        .quote-author {
+            margin-top: 24px;
+            font-style: normal;
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* PORTAL & FOOTER - FIXED */
+        /* ─────────────────────────────────────────────── */
+
+        .portal-section {
+            background: rgba(255, 255, 255, 0.03);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            width: 100%;
+        }
+
+        .big-portal-btn {
+            display: inline-block;
+            background: white;
+            color: var(--maroon);
+            font-weight: 700;
+            padding: 24px 48px;
+            /* Reduced horizontal padding */
+            border-radius: 16px;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s;
+            width: calc(100% - 32px);
+            /* Full width minus margins */
+            max-width: 420px;
+            margin: 32px auto 0;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .big-portal-btn {
+                width: 100%;
+                padding: 24px 64px;
+            }
+        }
+
+        .big-portal-btn:hover {
+            background: var(--gold);
+        }
+
+        footer {
+            padding: 80px 16px 40px;
+            /* Reduced padding on mobile */
+            background: rgba(0, 0, 0, 0.35);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            width: 100%;
+        }
+
+        @media (min-width: 768px) {
+            footer {
+                padding: 120px 24px 80px;
+            }
+        }
+
+        .footer-grid {
+            display: grid;
+            gap: 48px;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .footer-grid {
+                grid-template-columns: repeat(3, 1fr);
+                text-align: left;
+            }
+        }
+
+        .footer-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .social-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            /* Reduced gap on mobile */
+            margin: 48px 0 60px;
+            /* Reduced margins */
+        }
+
+        @media (min-width: 768px) {
+            .social-row {
+                gap: 60px;
+                margin: 64px 0 80px;
+            }
+        }
+
+        .social-icon {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 2.5rem;
+            /* Smaller on mobile */
+            transition: all 0.5s;
+        }
+
+        @media (min-width: 768px) {
+            .social-icon {
+                font-size: 3.5rem;
+            }
+        }
+
+        .social-icon:hover {
+            color: var(--gold);
+            transform: scale(1.25);
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.4));
+        }
+
+        .copyright {
+            opacity: 0.25;
+            font-size: 9px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* ─────────────────────────────────────────────── */
+        /* ANIMATIONS */
+        /* ─────────────────────────────────────────────── */
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-16px);
+            }
+        }
+    </style>
+</head>
+
+<body class="mesh-bg">
+<!-- ⚡ INSTANT LOADING SCREEN -->
+<div id="pageLoader" style="
+    position:fixed; inset:0; z-index:99999;
+    background:#0a0000;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    transition: opacity 0.5s ease;
+">
+    <img src="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png" 
+         style="width:70px; height:70px; object-fit:contain; margin-bottom:20px; animation: pulse 1.5s infinite;"
+         alt="AUI Chapel">
+    <div style="font-family:'Plus Jakarta Sans',sans-serif; color:#FFD700; font-size:11px; font-weight:700; letter-spacing:3px; text-transform:uppercase;">
+        AUI Chapel
+    </div>
+    <div style="margin-top:24px; width:40px; height:3px; background:rgba(255,215,0,0.2); border-radius:2px; overflow:hidden;">
+        <div style="height:100%; background:#FFD700; border-radius:2px; animation: loadBar 1.5s ease infinite;"></div>
+    </div>
+</div>
+
+<style>
+@keyframes loadBar {
+    0% { width:0%; margin-left:0; }
+    50% { width:100%; margin-left:0; }
+    100% { width:0%; margin-left:100%; }
+}
+</style>
+
+<script>
+    // Hide loader as soon as page is interactive
+    window.addEventListener('load', function() {
+        const loader = document.getElementById('pageLoader');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 500);
+        }
+    });
+    // Fallback — remove after 3 seconds no matter what
+    setTimeout(() => {
+        const loader = document.getElementById('pageLoader');
+        if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.remove(), 500); }
+    }, 3000);
+</script>
+
+
+    <nav>
+        <div class="logo-wrap" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+            <img src="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/logo_sasw9h.png" alt="AUI">
+            <div class="logo-text">
+                <span class="logo-main">AUI CHAPEL</span>
+                <span class="logo-small">CHAPEL OF MARY</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#mission">Our Mission</a>
+            <a href="#schedule">Liturgy</a>
+            <a href="studentsignup.html">Reflections</a>
+            <a href="studentsignup.html" class="nav-login">Login</a>
+        </div>
+
+        <button title="class" id="menu-btn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <div id="mobile-menu">
+        <button onclick="document.getElementById('mobile-menu').classList.remove('active')"
+            style="align-self:flex-end; font-size:3.5rem; color:var(--gold); background:none; border:none; cursor:pointer; margin-bottom:40px;">×</button>
+        <a href="#about" onclick="document.getElementById('mobile-menu').classList.remove('active')">About</a>
+        <a href="#mission" onclick="document.getElementById('mobile-menu').classList.remove('active')">Our Mission</a>
+        <a href="#schedule" onclick="document.getElementById('mobile-menu').classList.remove('active')">Liturgy</a>
+        <a href="studentsignup.html"
+            onclick="document.getElementById('mobile-menu').classList.remove('active')">Reflections</a>
+        <a href="studentsignup.html" class="gold"
+            onclick="document.getElementById('mobile-menu').classList.remove('active')">Student Login</a>
+        <a href="staffsignup.html" style="font-size:1rem; opacity:0.6;"
+            onclick="document.getElementById('mobile-menu').classList.remove('active')">Admin Entry</a>
+    </div>
+
+    <header>
+        <video autoplay muted loop playsinline>
+            <source src="https://res.cloudinary.com/drirmjeem/video/upload/v1772050828/church_hgktuq.mp4" type="video/mp4">
+        </video>
+
+        <div class="hero-content">
+            <div class="badge">Sancta Maria, auxiliare nos.</div>
+            <h1 class="serif">Pure <span class="gold-gradient">Grace</span></h1>
+            <p class="hero-p">Where faith fuels the mind. Welcome to the digital gateway of Augustine University's
+                spiritual life.</p>
+            <div class="hero-buttons">
+                <a href="studentsignup.html" class="btn-gold">Student Hub</a>
+                <a href="staffsignup.html" class="btn-light">Chaplaincy Login</a>
+            </div>
+        </div>
+
+        <div class="scroll-down">Scroll to Explore</div>
+    </header>
+
+    <section class="reveal">
+        <div id="verse-card" class="glass container">
+            <div class="maroon-line" style="margin:0 auto 32px;"></div>
+            <p id="verse-text" class="serif"></p>
+            <p id="verse-ref"></p>
+        </div>
+    </section>
+
+    <section id="about" class="reveal">
+        <div class="container two-col">
+            <div>
+                <h2 class="serif" style="color:var(--gold);">A Legacy of<br>Devotion</h2>
+                <div class="maroon-line"></div>
+                <div
+                    style="color:rgba(255,255,255,0.45); font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                    Since Foundation</div>
+            </div>
+            <div style="color:rgba(255,255,255,0.75); font-weight:300;">
+                <p>Founded as the spiritual heart of Augustine University, the Chapel of Mary, Mother of the Church,
+                    serves as a sanctuary where students and faculty alike find solace. From its modest beginnings to
+                    becoming a beacon of architectural and spiritual beauty, the chapel has always prioritized the
+                    holistic development of the human person.</p>
+                <p style="margin-top:24px;">Our mission is simple: To provide a welcoming space for prayer, sacramental
+                    life, and intellectual inquiry, ensuring that every member of the AUI community feels the presence
+                    of Pure Grace.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="mission" class="reveal">
+        <div class="container two-col">
+            <div class="mission-img-wrap">
+                <img src="https://res.cloudinary.com/drirmjeem/image/upload/v1772050880/church_xkr8qj.png" alt="Chapel" class="mission-img">
+            </div>
+            <div>
+                <h2 class="serif">Our <span style="color:var(--gold);">Mission</span></h2>
+                <div class="gold-line" style="margin:0;"></div>
+                <p style="color:rgba(255,255,255,0.7); font-size:1.2rem; font-weight:300;">
+                    The Chapel of Mary, Mother of the Church, stands as the spiritual lighthouse of Augustine
+                    University. Our mission is to foster a community where <strong>Faith and Intellect</strong>
+                    converge.
+                </p>
+                <p style="margin-top:24px; color:rgba(255,255,255,0.7); font-size:1.2rem; font-weight:300;">
+                    Through this digital portal, we bring daily liturgy, sacramental growth, and departmental fellowship
+                    to every student's fingertips, ensuring the "AUI Spirit" thrives beyond the physical walls.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="schedule" class="reveal">
+        <div class="container text-center">
+            <h2 class="serif">Liturgy & <span style="color:var(--gold);">Sacraments</span></h2>
+            <div class="maroon-line" style="margin:32px auto;"></div>
+        </div>
+
+        <div class="container schedule-layout" style="margin-top:64px;">
+            <div style="display:flex; flex-direction:column; gap:24px;">
+                <!-- Daily Mass -->
+                <div class="glass mass-card">
+                    <div class="mass-row">
+                        <div style="display:flex; align-items:center; gap:24px;">
+                            <div class="icon-box"><i class="fa-solid fa-cross"></i></div>
+                            <div>
+                                <h4 style="font-size:1.3rem; font-weight:700;">Daily Mass</h4>
+                                <div
+                                    style="font-size:10px; color:rgba(255,255,255,0.45); font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                                    Mon — Fri</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="time-big">7:00 <small style="font-size:0.9rem; opacity:0.6;">am</small> / 1:00
+                                <small style="font-size:0.9rem; opacity:0.6;">pm</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Saturday -->
+                <div class="glass mass-card">
+                    <div class="mass-row">
+                        <div style="display:flex; align-items:center; gap:24px;">
+                            <div class="icon-box"><i class="fa-solid fa-cross"></i></div>
+                            <div>
+                                <h4 style="font-size:1.3rem; font-weight:700;">Saturday</h4>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="time-big">9:00 <small style="font-size:0.9rem; opacity:0.6;">am</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sunday -->
+                <div class="glass mass-card" style="border-left:6px solid var(--gold); background:rgba(74,4,4,0.55);">
+                    <div class="mass-row">
+                        <div style="display:flex; align-items:center; gap:24px;">
+                            <div class="icon-box" style="background:var(--gold); color:var(--maroon);"><i
+                                    class="fa-solid fa-sun"></i></div>
+                            <div>
+                                <h4 style="font-size:1.3rem; font-weight:700; color:var(--gold);">Sunday Liturgy</h4>
+                                <div
+                                    style="font-size:10px; color:rgba(255,255,255,0.7); font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                                    Solemn Celebration</div>
+                            </div>
+                        </div>
+                        <div style="text-align:right;">
+                            <div class="time-big" style="font-size:3.8rem;">8:00 <small
+                                    style="font-size:1rem; opacity:0.6; font-weight:normal;">am</small></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr; gap:24px;">
+
+                    <div class="glass small-card">
+                        <div class="icon-box" style="width:48px; height:48px; font-size:1.4rem;"><i
+                                class="fa-solid fa-fire"></i></div>
+                        <div>
+                            <div
+                                style="font-size:10px; color:rgba(255,255,255,0.45); font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                                Adoration</div>
+                            <div class="serif" style="font-size:1.6rem; margin-top:4px;">Thu, 5:30 <small>PM</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass small-card">
+                        <div class="icon-box" style="width:48px; height:48px; font-size:1.4rem;"><i
+                                class="fa-solid fa-heart"></i></div>
+                        <div>
+                            <div
+                                style="font-size:10px; color:rgba(255,255,255,0.45); font-weight:700; letter-spacing:2px; text-transform:uppercase;">
+                                Confession</div>
+                            <div class="serif" style="font-size:1.6rem; margin-top:4px;">Sat, After Mass</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass" style="padding:40px;">
+                <h3 class="serif" style="font-size:2rem; color:var(--gold); margin-bottom:32px; font-style:italic;">
+                    Sacred Events</h3>
+                <div style="display:flex; flex-direction:column; gap:32px;">
+                    <div style="display:flex; gap:24px; align-items:center;">
+                        <div class="date-box">
+                            <small>Mar</small>
+                            <span>29</span>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;">Palm Sunday</div>
+                            <div
+                                style="font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px;">
+                                The beginning of Holy Week.</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:24px; align-items:center;">
+                        <div class="date-box">
+                            <small>Apr</small>
+                            <span>02</span>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;">Holy Thursday</div>
+                            <div
+                                style="font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px;">
+                                Mass of the Lord's Supper & Washing of Feet.</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:24px; align-items:center;">
+                        <div class="date-box">
+                            <small>Apr</small>
+                            <span>03</span>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;">Good Friday</div>
+                            <div
+                                style="font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px;">
+                                Celebration of the Lord's Passion.</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:24px; align-items:center;">
+                        <div class="date-box">
+                            <small>Apr</small>
+                            <span>05</span>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;">Easter Sunday</div>
+                            <div
+                                style="font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px;">
+                                The Resurrection of the Lord (Pure Grace).</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="community-gallery" class="reveal">
+        <div class="container text-center">
+            <h2 class="serif">Community <span style="color:var(--gold);">Life</span></h2>
+            <div
+                style="color:rgba(255,255,255,0.45); font-size:10px; letter-spacing:5px; font-weight:700; text-transform:uppercase; margin-top:16px;">
+                Shared moments of Grace</div>
+        </div>
+
+        <div class="container gallery-grid">
+            <div class="gallery-item">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo974pKqLvSGUmEOR3hNyhPJ630HsAsJjTmw&s"
+                    alt="Mass">
+                <div class="gallery-caption">
+                    <div class="caption-text">Mass Celebrations</div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8eV5msvcI9msZ7Ao_DGHf97lSaLHVLbj5VA&s"
+                    alt="Choir">
+                <div class="gallery-caption">
+                    <div class="caption-text">Choir Fellowship</div>
+                </div>
+            </div>
+
+            <div class="gallery-item">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoIytKJwJ92nDg6SaeN0VLVmWIAEqkJYMweg&s"
+                    alt="Youth">
+                <div class="gallery-caption">
+                    <div class="caption-text">Youth Gatherings</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal" style="padding-bottom:160px;">
+        <div class="container" style="max-width:1000px;">
+            <div class="glass" style="padding:32px; border-radius:48px; overflow:hidden;">
+                <div class="text-center" style="margin-bottom:32px;">
+                    <h3 class="serif" style="font-size:1.8rem; color:var(--gold); font-style:italic;">Featured
+                        Reflection</h3>
+                    <div
+                        style="font-size:9px; color:rgba(255,255,255,0.45); letter-spacing:3px; text-transform:uppercase; margin-top:8px;">
+                        Watch our latest service</div>
+                </div>
+                <div
+                    style="position:relative; padding-bottom:56.25%; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+                    <iframe style="position:absolute; inset:0; width:100%; height:100%;"
+                        src="https://www.youtube.com/embed/IrZ9T-JIMHA" title="AUI Chapel Video" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="reveal">
+        <div class="container text-center" style="max-width:900px;">
+            <h2 class="serif" style="font-size:2.8rem; margin-bottom:64px;">Community <span
+                    style="color:var(--gold); font-style:italic;">Voices</span></h2>
+            <div class="testimonials-grid">
+                <div class="quote">
+                    "The quiet mornings in the chapel have become my anchor during exam season. It's more than a
+                    building; it's a home."
+                    <div class="quote-author">— Chinelo A., Year 3</div>
+                </div>
+                <div class="quote">
+                    "AUI Chapel is where my faith met my studies. The reflections helped me find purpose in my career
+                    path."
+                    <div class="quote-author">— David O., Alumnus</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="student-portal" class="portal-section reveal">
+        <div class="container text-center" style="max-width:900px; padding:120px 24px;">
+            <h3 class="serif" style="font-size:3.5rem; margin-bottom:32px;">Ready to grow?</h3>
+            <div
+                style="color:rgba(255,255,255,0.45); font-size:10px; letter-spacing:3px; font-weight:700; text-transform:uppercase; margin-bottom:48px;">
+                Reflections • Bible Readings • Leaderboards</div>
+            <a href="studentsignup.html" class="big-portal-btn">ENTER STUDENT SANCTUARY</a>
+        </div>
+    </section>
+
+    <section class="reveal" style="padding:80px 24px;">
+        <div class="container"
+            style="max-width:1200px; display:flex; flex-direction:column; align-items:center; gap:40px; text-align:center;">
+            <div>
+                <div
+                    style="color:var(--gold); font-weight:700; letter-spacing:2px; font-size:10px; text-transform:uppercase; margin-bottom:8px;">
+                    Internal Access</div>
+                <div style="color:rgba(255,255,255,0.35); font-size:14px;">For Chaplaincy and Admin Staff only.</div>
+            </div>
+            <a href="staffsignup.html"
+                style="border:1px solid rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); padding:16px 40px; border-radius:12px; font-size:10px; letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:0.3s;">Admin
+                Portal Entry</a>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-grid">
+            <div>
+                <div class="footer-title">Visit Us</div>
+                <div style="color:rgba(255,255,255,0.45); font-size:14px; line-height:1.7;">
+                    Augustine University Campus<br>Ilara-Epe, Lagos State<br><span
+                        style="color:var(--gold);">Directions:</span> Directly opposite the main Convocation Building.
+                </div>
+            </div>
+            <div>
+                <div class="footer-title">Chapel Hours</div>
+                <div style="color:rgba(255,255,255,0.45); font-size:14px;">
+                    Open daily for private prayer<br>5:00 AM — 9:00 PM<br>Office Hours: 9 AM — 4 PM
+                </div>
+            </div>
+            <div>
+                <div class="footer-title">Connect</div>
+                <div style="color:rgba(255,255,255,0.45); font-size:14px;">Links would be added soon</div>
+            </div>
+        </div>
+
+        <div
+            style="max-width:1000px; margin:80px auto 0; border-top:1px solid rgba(255,255,255,0.08); padding-top:64px; text-align:center;">
+            <div
+                style="color:var(--gold); font-weight:700; letter-spacing:4px; font-size:10px; text-transform:uppercase; margin-bottom:48px;">
+                Join Our Online Community</div>
+            <div class="social-row">
+                <a href="https://www.instagram.com/p/DDt4TWaI-A7/" class="social-icon"><i
+                        class="fab fa-instagram"></i></a>
+                <a title="TikTok" href="https://www.tiktok.com/@auichaplaincy" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                <a title="YouTube" href="https://www.youtube.com/@auichaplaincy" class="social-icon"><i class="fab fa-youtube"></i></a>
+            </div>
+        </div>
+
+        <div class="copyright" style="margin-top:64px;">
+            © 2026 Augustine University • Mother of the Church
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu
+        document.getElementById('menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.add('active');
+        });
+
+        // Scroll reveal
+        function checkReveal() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 120) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkReveal);
+        checkReveal();
+
+        // Random Mary verse
+        async function loadVerse() {
+            const verses = [
+                'Luke 1:28', 'Luke 1:38', 'Luke 1:42', 'Luke 1:46', 'John 2:5', 'Luke 1:30'
+            ];
+            const ref = verses[Math.floor(Math.random() * verses.length)];
+
+            try {
+                const res = await fetch(`https://bible-api.com/${ref}?translation=kjv`);
+                const data = await res.json();
+                document.getElementById('verse-text').textContent = `"${data.text.trim()}"`;
+                document.getElementById('verse-ref').textContent = data.reference;
+            } catch (e) {
+                document.getElementById('verse-text').textContent = '"Hail, thou that art highly favoured, the Lord is with thee."';
+                document.getElementById('verse-ref').textContent = 'Luke 1:28 (KJV)';
+            }
+        }
+
+        loadVerse();
+    </script>
+</body>
+
+</html>
